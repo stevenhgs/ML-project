@@ -1,8 +1,6 @@
 import random
 import numpy as np
 
-# test
-
 actions = {"rock":      0,
            "paper":     1,
            "scissors":  2}
