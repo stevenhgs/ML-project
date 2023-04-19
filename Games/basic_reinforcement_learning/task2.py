@@ -21,8 +21,8 @@ def create_biased_rock_paper_scissors_game():
   game = pyspiel.MatrixGame(
       game_type,
       {},                                                   # game_parameters
-      ["Rock", "Paper", "Scissors"],                        # Row player actions
-      ["Rock", "Paper", "Scissors"],                        # Column player actions
+      ["Rock", "Paper", "Scissors"],                        # row_action_names
+      ["Rock", "Paper", "Scissors"],                        # col_action_names
       [[0, -0.25, 0.5], [0.25, 0, -0.05], [-0.5, 0.05, 0]], # Row player utilities
       [[0, 0.25, -0.5], [-0.25, 0, 0.05], [0.5, -0.05, 0]]  # Column player utilities
   )
@@ -48,8 +48,8 @@ def create_dispersion_game():
   game = pyspiel.MatrixGame(
       game_type,
       {},                   # game_parameters
-      ["A", "B"],           # Row player actions
-      ["A", "B"],           # Column player actions
+      ["A", "B"],           # row_action_names
+      ["A", "B"],           # col_action_names
       [[-1, -1], [1, 1]],   # Row player utilities
       [[1, 1], [-1, -1]]    # Column player utilities
   )
@@ -74,11 +74,11 @@ def create_battle_of_the_sexes_game():
   )
   game = pyspiel.MatrixGame(
       game_type,
-      {},               # game_parameters
-      ["O", "M"],       # Row player actions
-      ["O", "M"],       # Column player actions
-      [[3, 2], [0, 0]], # Row player utilities
-      [[0, 0], [2, 3]]  # Column player utilities
+      {},                   # game_parameters
+      ["Opera", "Movie"],   # row_action_names
+      ["Opera", "Movie"],   # col_action_names
+      [[3, 2], [0, 0]],     # Row player utilities
+      [[0, 0], [2, 3]]      # Column player utilities
   )
   return game
 
@@ -101,10 +101,10 @@ def create_prisoners_dilemma_game():
   )
   game = pyspiel.MatrixGame(
       game_type,
-      {},                   # game_parameters
-      ["C", "D"],           # Row player actions
-      ["C", "D"],           # Column player actions
-      [[-1 -1], [-4, 0]],   # Row player utilities
-      [[0, -4], [-3, -3]]   # Column player utilities
+      {},                       # game_parameters
+      ["Cooperate", "Defect"],  # row_action_names
+      ["Cooperate", "Defect"],  # col_action_names
+      [[-1 -1], [-4, 0]],       # Row player utilities
+      [[0, -4], [-3, -3]]       # Column player utilities
   )
   return game
