@@ -43,11 +43,11 @@ print(dispersion_game.player_utility(0, 1, 1))
 
 
 # Define the matrix game payoff matrix
-A = np.array([[4, 1],
-              [3, 3]])
+A = np.array([[-1, 1],
+              [1, -1]])
 
-B = np.array([[4, 1],
-              [3, 3]])
+B = np.array([[-1, 1],
+              [1, -1]])
 
 # Define the range of x and y values to plot
 x = np.arange(0, 1.0, 0.05)
@@ -58,27 +58,34 @@ mesh_size = len(x)
 # Create a meshgrid from the x and y values
 X, Y = np.meshgrid(x, y)
 
+print(Y)
+
 # Define the differential equations for the directional field
 dX = np.array([[0 for _ in range(mesh_size)] for _ in range(mesh_size)], dtype=float)
 dY = np.array([[0 for _ in range(mesh_size)] for _ in range(mesh_size)], dtype=float)
 
-for r_i in range(mesh_size):
-  y_val = Y[r_i][0]
-  for c_i in range(mesh_size):
-    x_val = X[0][c_i]
-    new_dx = x_val * (A[0][0] * y_val + A[0][1] * (1 - y_val) - (x_val * (A[0][0] * y_val + A[0][1] * (1 - y_val) + (1 - x_val) * (A[1][0] * y_val + A[1][1] * (1 - y_val)))))
-    new_dy = y_val * (B[0][0] * x_val + B[0][1] * (1 - x_val) - (y_val * (B[0][0] * x_val + B[0][1] * (1 - x_val) + (1 - y_val) * (B[1][0] * x_val + B[1][1] * (1 - x_val)))))
-    dX[r_i, c_i] = new_dx
-    print(new_dx)
-    print(dX[r_i, c_i])
-    print(dX)
-    dY[r_i, c_i] = new_dy
+for y_i in range(20):
+  y1 = 0.05 * y_i
+  y2 = 1 - y1
+  for x_i in range(20):
+    x1 = 0.05 * x_i
+    x2 = 1 - x1
+
+    Ay1 = A[0][0] * y1 + A[0][1] * y2
+    xTAy = (x1 * (A[0][0] * y1 + A[0][1] * y2) + x2 * (A[1][0] * y1 + A[1][1] * y2))
+    dX_val = x1 * (Ay1 - xTAy)
+
+    Bx1 = B[0][0] * x1 + B[0][1] * x2
+    yTBx = (y1 * (B[0][0] * x1 + B[0][1] * x2) + y2 * (B[1][0] * x1 + B[1][1] * x2))
+    dY_val = y1 * (Bx1 - yTBx)
+
+    dX[y_i][x_i] = dX_val
+    dY[y_i][x_i] = dY_val
+    
 
 print(dX)
 # Normalize the differential equations
 norm = np.sqrt(dX**2 + dY**2)
-dX = dX / norm
-dY = dY / norm
 
 print(dX)
 # Plot the directional field using quiver
