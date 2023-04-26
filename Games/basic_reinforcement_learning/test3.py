@@ -43,11 +43,11 @@ print(dispersion_game.player_utility(0, 1, 1))
 
 
 # Define the matrix game payoff matrix
-A = np.array([[-1, 1],
-              [1, -1]])
+A = np.array([[3, 0],
+              [0, 2]])
 
-B = np.array([[-1, 1],
-              [1, -1]])
+B = np.array([[2, 0],
+              [0, 2]])
 
 # Define the range of x and y values to plot
 x = np.arange(0, 1.0, 0.05)
