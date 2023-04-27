@@ -1,3 +1,4 @@
+import pdb
 
 import numpy as np
 import random
@@ -35,8 +36,8 @@ class QLearning:
         exploration_rate = self.initial_exploration_rate
         nb_actions = len(actions)
 
-        Q1 = np.zeros(nb_actions, nb_actions)
-        Q2 = np.zeros(nb_actions, nb_actions)
+        Q1 = np.zeros((nb_actions, nb_actions))
+        Q2 = np.zeros((nb_actions, nb_actions))
 
         trajectory1 = []
         trajectory2 = []
@@ -48,22 +49,23 @@ class QLearning:
             action2 = self.choose_action(Q2, state2, actions, exploration_rate)
 
             P1 = [0 for i in range(nb_actions)]
-            P1[np.argmax(Q1[action1])] = 1 - exploration_rate
+            P1[np.argmax(Q1[state1])] = 1 - exploration_rate
             P1 = [x + exploration_rate / nb_actions for x in P1]
             trajectory1.append(P1)
 
             P2 = [0 for i in range(nb_actions)]
-            P2[np.argmax(Q2[action2])] = 1 - exploration_rate
+            P2[np.argmax(Q2[state2])] = 1 - exploration_rate
             P2 = [x + exploration_rate / nb_actions for x in P2]
             trajectory2.append(P2)
 
-            reward1 = payoff[action1][action2]
-            reward2 = payoff[action2][action1]
+            reward1 = payoff[0][action1][action2]
+            reward2 = payoff[1][action1][action2]
 
-            next_state1 = action1
-            next_state2 = action2
-            self.update_q(Q1, state1, action1, reward1, next_state1)
-            self.update_q(Q2, state2, action2, reward2, next_state2)
+            self.update_q(Q1, state1, action1, reward1, action1)
+            self.update_q(Q2, state2, action2, reward2, action2)
+
+            state1 = action1
+            state2 = action2
 
             exploration_rate = self.min_exploration_rate + \
                                (self.max_exploration_rate - self.min_exploration_rate) * np.exp(-self.exploration_decay_rate * episode)
