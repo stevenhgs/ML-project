@@ -1,3 +1,5 @@
+import numpy as np
+import random
 
 
 class QLearning:
@@ -8,7 +10,7 @@ class QLearning:
         self.learning_rate = learning_rate
         self.discount_rate = discount_rate
         self.initial_exploration_rate = initial_exploration_rate
-        self.max_exploration_rate = exploration_rate
+        self.max_exploration_rate = initial_exploration_rate
         self.min_exploration_rate = 0.01
         self.exploration_decay_rate = 0.001
 
@@ -16,7 +18,7 @@ class QLearning:
         self.exploration_decay_rate = decay_rate
 
     @staticmethod
-    def choose_action(Q, state):
+    def choose_action(Q, state, actions, exploration_rate):
         # Probability of epsilon to choose random action
         if random.random() < exploration_rate:
             action = random.choice(list(actions.values()))
@@ -26,9 +28,8 @@ class QLearning:
         return action
 
     # Update the Q-values using epsilon-greedy Q-learning
-    @staticmethod
-    def update_q(Q, state, action, reward, next_state):
-        Q[state][action] += learning_rate * (reward + discount_rate * max(Q[next_state]) - Q[state][action])
+    def update_q(self, Q, state, action, reward, next_state):
+        Q[state][action] += self.learning_rate * (reward + self.discount_rate * max(Q[next_state]) - Q[state][action])
 
     def learn(self, episodes, actions, payoff):
         exploration_rate = self.initial_exploration_rate
@@ -40,11 +41,11 @@ class QLearning:
         trajectory1 = []
         trajectory2 = []
 
-        state1 = random.choice(list(states.values()))
-        state2 = random.choice(list(states.values()))
+        state1 = random.choice(list(actions.values()))
+        state2 = random.choice(list(actions.values()))
         for episode in range(episodes):
-            action1 = choose_action(Q1, state1)
-            action2 = choose_action(Q2, state2)
+            action1 = self.choose_action(Q1, state1, actions, exploration_rate)
+            action2 = self.choose_action(Q2, state2, actions, exploration_rate)
 
             P1 = [0 for i in range(nb_actions)]
             P1[np.argmax(Q1[action1])] = 1 - exploration_rate
@@ -61,13 +62,10 @@ class QLearning:
 
             next_state1 = action1
             next_state2 = action2
-            update_Q(Q1, state1, action1, reward1, next_state1)
-            update_Q(Q2, state2, action2, reward2, next_state2)
+            self.update_q(Q1, state1, action1, reward1, next_state1)
+            self.update_q(Q2, state2, action2, reward2, next_state2)
 
-            exploration_rate = min_exploration_rate + \
-                               (max_exploration_rate - min_exploration_rate) * np.exp(-exploration_decay_rate * episode)
+            exploration_rate = self.min_exploration_rate + \
+                               (self.max_exploration_rate - self.min_exploration_rate) * np.exp(-self.exploration_decay_rate * episode)
 
         return Q1, Q2, trajectory1, trajectory2
-
-
-
