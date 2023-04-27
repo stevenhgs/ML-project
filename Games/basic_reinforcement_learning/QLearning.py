@@ -1,6 +1,6 @@
+
 import numpy as np
 import random
-
 
 class QLearning:
     def __init__(self,

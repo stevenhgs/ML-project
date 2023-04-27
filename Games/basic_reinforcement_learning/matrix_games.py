@@ -104,7 +104,20 @@ def create_prisoners_dilemma_game():
       {},                       # game_parameters
       ["Cooperate", "Defect"],  # row_action_names
       ["Cooperate", "Defect"],  # col_action_names
-      [[-1 -1], [-4, 0]],       # Row player utilities
+      [[-1, -1], [-4, 0]],       # Row player utilities
       [[0, -4], [-3, -3]]       # Column player utilities
   )
   return game
+
+def get_actions(game):
+    row_actions = []
+    col_actions = []
+
+    for row in range(game.num_rows()):
+        row_actions.append(game.row_action_name(row))
+
+    for col in range(game.num_cols()):
+        col_actions.append(game.col_action_name(col))
+
+    return row_actions, col_actions
+
