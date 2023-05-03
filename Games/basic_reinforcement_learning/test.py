@@ -80,6 +80,8 @@ norm = np.sqrt(dX**2 + dY**2)
 dX = dX / norm
 dY = dY / norm
 
+print("all functions on MatrixGame")
+print(dir(pyspiel.MatrixGame))
 print(dX)
 # Plot the directional field using quiver
 plt.quiver(X, Y, dX, dY)

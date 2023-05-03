@@ -1,13 +1,12 @@
-
 import pyspiel
 import numpy as np
 
-from QLearning import QLearning
+from QLearning_reworked import QLearning
 import matrix_games
 
 import pdb
 
-QLearner = QLearning(learning_rate=0.2, discount_rate=0.0, initial_exploration_rate=0.8)
+QLearner = QLearning(learning_rate=0.01, discount_rate=0, initial_exploration_rate=0.1)
 custom_game = matrix_games.create_biased_rock_paper_scissors_game()
 
 row_actions, col_actions = matrix_games.get_actions(custom_game)
@@ -16,7 +15,7 @@ dict_row_actions = {}
 for i, action in enumerate(row_actions):
     dict_row_actions[action] = i
 
-nb_episodes = 10000
+nb_episodes = 100000
 
 payoff = []
 payoff.append(custom_game.row_utilities())
