@@ -3,7 +3,20 @@ import pyspiel
 from absl import app
 
 
+def get_points(state):
+    state_string = state.to_string()
+    player_1_points = 0
+    player_2_points = 0
+    for char in state_string:
+        if char == '1':
+            player_1_points += 1
+        elif char == '2':
+            player_2_points += 1
+    return player_1_points, player_2_points
+
+
 def state_to_bitmap(state):
+    points = get_points(state)
     info_string = state.history_str()
     if info_string == '':
         return 0
@@ -13,7 +26,7 @@ def state_to_bitmap(state):
     for digit in info_digits:
         flag = 1 << digit
         bit_map |= flag
-    return bit_map
+    return bit_map, points, state.current_player()
 
 
 def start_minimax(start_state, start_maximizing_player_id):
@@ -37,6 +50,8 @@ def start_minimax(start_state, start_maximizing_player_id):
 
         if state.is_terminal():
             cache[state_hash] = state.player_return(maximizing_player_id)
+            print(state)
+            print(cache[state_hash])
             return state.player_return(maximizing_player_id)
 
         player = state.current_player()
@@ -49,7 +64,9 @@ def start_minimax(start_state, start_maximizing_player_id):
         cache[state_hash] = output
         return output
     
-    return _minimax(start_state, start_maximizing_player_id)
+    result = _minimax(start_state, start_maximizing_player_id)
+    print(result)
+    return result
 
 
 def minimax_search(game,
