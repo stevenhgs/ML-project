@@ -1,3 +1,4 @@
+import time
 import pyspiel
 from absl import app
 
@@ -73,6 +74,8 @@ def minimax_search(game,
 
 
 def main(_):
+    start = time.time()
+
     games_list = pyspiel.registered_names()
     assert "dots_and_boxes" in games_list
     game_string = "dots_and_boxes(num_rows=2,num_cols=2)"
@@ -87,6 +90,9 @@ def main(_):
     else:
         winning_player = 1 if value == 1 else 2
         print(f"Player {winning_player} wins.")
+
+    end = time.time()
+    print("Game took: " + str(end - start) + " s")
 
 
 if __name__ == "__main__":
