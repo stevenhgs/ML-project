@@ -33,3 +33,18 @@ for i in range(12):
 print(s.history_str())
 print(s.to_string())
 print(s.player_return(0))
+
+
+def state_to_bitmap(state):
+    info_string = state.history_str()
+    if info_string == '':
+        return 0
+    split_info_string = info_string.split(', ')
+    info_digits = [int(digit) for digit in split_info_string]
+    bit_map = 0
+    for digit in info_digits:
+        flag = 1 << digit
+        bit_map |= flag
+    return bit_map
+
+

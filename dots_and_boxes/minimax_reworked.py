@@ -6,20 +6,14 @@ from absl import app
 def state_to_bitmap(state):
     info_string = state.history_str()
     if info_string == '':
-        return 0, 0
+        return 0
     split_info_string = info_string.split(', ')
     info_digits = [int(digit) for digit in split_info_string]
-    player_one_bit_map = 0
-    player_two_bit_map = 0
-    is_for_player_one = True
+    bit_map = 0
     for digit in info_digits:
         flag = 1 << digit
-        if is_for_player_one:
-            player_one_bit_map |= flag
-        else:
-            player_two_bit_map |= flag
-        is_for_player_one = not is_for_player_one
-    return player_one_bit_map, player_two_bit_map
+        bit_map |= flag
+    return bit_map
 
 
 def start_minimax(start_state, start_maximizing_player_id):
