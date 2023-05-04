@@ -31,6 +31,7 @@ def state_to_bitmap(state):
 
 def start_minimax(start_state, start_maximizing_player_id):
     cache = dict()
+    nb_nodes = 0
 
     def _minimax(state, maximizing_player_id):
         """
@@ -48,6 +49,8 @@ def start_minimax(start_state, start_maximizing_player_id):
         if cache.get(state_hash) is not None:
             return cache[state_hash]
 
+        nonlocal nb_nodes
+        nb_nodes += 1
         if state.is_terminal():
             cache[state_hash] = state.player_return(maximizing_player_id)
             print(state)
@@ -65,7 +68,7 @@ def start_minimax(start_state, start_maximizing_player_id):
         return output
     
     result = _minimax(start_state, start_maximizing_player_id)
-    print(result)
+    print(f'explored {nb_nodes} nodes')
     return result
 
 
