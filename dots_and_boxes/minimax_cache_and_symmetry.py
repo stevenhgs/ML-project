@@ -3,6 +3,52 @@ import pyspiel
 from absl import app
 
 
+def rotate_90_degrees(filled_in_nums, n):
+    nb_horizontal_lines = n * (n + 1)
+    rotated_filled_in_nums = []
+    for num in filled_in_nums:
+        if num >= nb_horizontal_lines: # this is vertical line
+            mapped_num = num - nb_horizontal_lines
+            r_i = mapped_num // (n + 1)
+            c_i = mapped_num % (n + 1)
+            rotated_num = n * (c_i + 1) - 1 - r_i
+            rotated_filled_in_nums.append(rotated_num)
+        else: # this is a horizontal line
+            r_i = num // n
+            c_i = num % n
+            rotated_num = (n - r_i) + ((n + 1) * c_i)
+            rotated_filled_in_nums.append(rotated_num + nb_horizontal_lines)
+    return rotated_filled_in_nums
+
+
+def filled_in_nums_to_bitmap(filled_in_nums):
+    bit_map = 0
+    for digit in filled_in_nums:
+        flag = 1 << digit
+        bit_map |= flag
+    return bit_map
+
+
+def add_symmetries_to_cache(cache, value, state, n):
+    points = get_points(state)
+    info_string = state.history_str()
+    if info_string == '':
+        return 0
+    split_info_string = info_string.split(', ')
+    filled_in_nums = [int(digit) for digit in split_info_string]
+    key = (filled_in_nums_to_bitmap(filled_in_nums), points, state.current_player())
+    cache[key] = value
+    rotated_nums_90 = rotate_90_degrees(filled_in_nums, n)
+    key90 = (filled_in_nums_to_bitmap(rotated_nums_90), points, state.current_player())
+    cache[key90] = value
+    rotated_nums_180 = rotate_90_degrees(rotated_nums_90, n)
+    key180 = (filled_in_nums_to_bitmap(rotated_nums_180), points, state.current_player())
+    cache[key180] = value
+    rotated_nums_270 = rotate_90_degrees(rotated_nums_180, n)
+    key270 = (filled_in_nums_to_bitmap(rotated_nums_270), points, state.current_player())
+    cache[key270] = value
+
+
 def get_points(state):
     state_string = state.to_string()
     player_1_points = 0
@@ -52,10 +98,11 @@ def start_minimax(start_state, start_maximizing_player_id):
         nonlocal nb_nodes
         nb_nodes += 1
         if state.is_terminal():
-            cache[state_hash] = state.player_return(maximizing_player_id)
+            value = state.player_return(maximizing_player_id)
+            add_symmetries_to_cache(cache, value, state, 3)
             print(state)
             print(cache[state_hash])
-            return state.player_return(maximizing_player_id)
+            return value
 
         player = state.current_player()
         if player == maximizing_player_id:
@@ -64,7 +111,7 @@ def start_minimax(start_state, start_maximizing_player_id):
             selection = min
         values_children = [_minimax(state.child(action), maximizing_player_id) for action in state.legal_actions()]
         output = selection(values_children)
-        cache[state_hash] = output
+        add_symmetries_to_cache(cache, output, state, 3)
         return output
     
     result = _minimax(start_state, start_maximizing_player_id)
@@ -120,7 +167,7 @@ def main(_):
 
     games_list = pyspiel.registered_names()
     assert "dots_and_boxes" in games_list
-    game_string = "dots_and_boxes(num_rows=2,num_cols=2)"
+    game_string = "dots_and_boxes(num_rows=3,num_cols=3)"
 
     print("Creating game: {}".format(game_string))
     game = pyspiel.load_game(game_string)
