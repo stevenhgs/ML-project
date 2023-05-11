@@ -3,6 +3,43 @@ import pyspiel
 from absl import app
 
 
+def flip_over_x_axis(filled_in_nums, n_r, n_c):
+    nb_horizontal_lines = n_c * (n_r + 1)
+    flipped_filled_in_nums = []
+    for num in filled_in_nums:
+        # extra is 1 if it is a vertical line else 0
+        extra = 1 if num >= nb_horizontal_lines else 0
+        # this is to map the vertical lines so that it starts from 0 as well
+        mapped_num = num - (nb_horizontal_lines * extra)
+        row_index = (mapped_num // (n_c + extra))
+        middle_row_index = (n_r - extra) / 2
+        flip = int(2 * (middle_row_index - row_index)) * (n_c + extra)
+        flipped_num = mapped_num + flip
+        # map the flipped num back to a vertical line if it was one
+        flipped_num += (nb_horizontal_lines * extra)
+        flipped_filled_in_nums.append(flipped_num)
+    return flipped_filled_in_nums
+
+
+def flip_over_y_axis(filled_in_nums, n_r, n_c):
+    nb_horizontal_lines = n_c * (n_r + 1)
+    flipped_filled_in_nums = []
+    for num in filled_in_nums:
+        # extra is 1 if it is a vertical line else 0
+        extra = 1 if num >= nb_horizontal_lines else 0
+        # this is to map the vertical lines so that it starts from 0 as well
+        mapped_num = num - (nb_horizontal_lines * extra)
+        column_index = (mapped_num % (n_c + extra))
+        middle_column_index = (n_c - 1 + extra) / 2
+        distance_to_middle_column_index = middle_column_index - column_index
+        flip = int(2 * distance_to_middle_column_index)
+        flipped_num = mapped_num + flip
+        # map the flipped num back to a vertical line if it was one
+        flipped_num += (nb_horizontal_lines * extra)
+        flipped_filled_in_nums.append(flipped_num)
+    return flipped_filled_in_nums
+
+
 def rotate_90_degrees(filled_in_nums, n):
     nb_horizontal_lines = n * (n + 1)
     rotated_filled_in_nums = []
@@ -29,24 +66,47 @@ def filled_in_nums_to_bitmap(filled_in_nums):
     return bit_map
 
 
-def add_symmetries_to_cache(cache, value, state, n):
+def add_symmetries_to_cache(cache, value, state, n_r, n_c):
     points = get_points(state)
     info_string = state.history_str()
-    if info_string == '':
+    if info_string == '': 
         return 0
     split_info_string = info_string.split(', ')
     filled_in_nums = [int(digit) for digit in split_info_string]
+    # normal key
     key = (filled_in_nums_to_bitmap(filled_in_nums), points, state.current_player())
     cache[key] = value
-    rotated_nums_90 = rotate_90_degrees(filled_in_nums, n)
-    key90 = (filled_in_nums_to_bitmap(rotated_nums_90), points, state.current_player())
-    cache[key90] = value
-    rotated_nums_180 = rotate_90_degrees(rotated_nums_90, n)
-    key180 = (filled_in_nums_to_bitmap(rotated_nums_180), points, state.current_player())
-    cache[key180] = value
-    rotated_nums_270 = rotate_90_degrees(rotated_nums_180, n)
-    key270 = (filled_in_nums_to_bitmap(rotated_nums_270), points, state.current_player())
-    cache[key270] = value
+    # flipped key horizontal
+    flipped_over_x_nums = flip_over_x_axis(filled_in_nums, n_r, n_c)
+    key_flipped_over_x = (filled_in_nums_to_bitmap(flipped_over_x_nums), points, state.current_player())
+    cache[key_flipped_over_x] = value
+
+    if n_r == n_c:  # square field (6 extra symmetries)
+        rotated_nums_90 = rotate_90_degrees(filled_in_nums, n_r)
+        key90 = (filled_in_nums_to_bitmap(rotated_nums_90), points, state.current_player())
+        cache[key90] = value
+        flipped_over_x_nums_90 = flip_over_x_axis(rotated_nums_90, n_r, n_c)
+        key_flipped_over_x_90 = (filled_in_nums_to_bitmap(flipped_over_x_nums_90), points, state.current_player())
+        cache[key_flipped_over_x_90] = value
+        rotated_nums_180 = rotate_90_degrees(rotated_nums_90, n_r)
+        key180 = (filled_in_nums_to_bitmap(rotated_nums_180), points, state.current_player())
+        cache[key180] = value
+        flipped_over_x_nums_180 = flip_over_x_axis(rotated_nums_180, n_r, n_c)
+        key_flipped_over_x_180 = (filled_in_nums_to_bitmap(flipped_over_x_nums_180), points, state.current_player())
+        cache[key_flipped_over_x_180] = value
+        rotated_nums_270 = rotate_90_degrees(rotated_nums_180, n_r)
+        key270 = (filled_in_nums_to_bitmap(rotated_nums_270), points, state.current_player())
+        cache[key270] = value
+        flipped_over_x_nums_270 = flip_over_x_axis(rotated_nums_270, n_r, n_c)
+        key_flipped_over_x_270 = (filled_in_nums_to_bitmap(flipped_over_x_nums_270), points, state.current_player())
+        cache[key_flipped_over_x_270] = value
+    else:  # rectangular field (2 extra symmetries)
+        flipped_over_y_nums = flip_over_y_axis(filled_in_nums, n_r, n_c)
+        key_flipped_over_y = (filled_in_nums_to_bitmap(flipped_over_y_nums), points, state.current_player())
+        cache[key_flipped_over_y] = value
+        flipped_over_x_and_y_nums = flip_over_y_axis(flipped_over_x_nums, n_r, n_c)
+        key_flipped_over_x_and_y = (filled_in_nums_to_bitmap(flipped_over_x_and_y_nums), points, state.current_player())
+        cache[key_flipped_over_x_and_y] = value
 
 
 def get_points(state):
@@ -75,7 +135,7 @@ def state_to_bitmap(state):
     return bit_map, points, state.current_player()
 
 
-def start_minimax(start_state, start_maximizing_player_id):
+def start_minimax(start_state, start_maximizing_player_id, num_rows, num_cols):
     cache = dict()
     nb_nodes = 0
 
@@ -99,7 +159,7 @@ def start_minimax(start_state, start_maximizing_player_id):
         nb_nodes += 1
         if state.is_terminal():
             value = state.player_return(maximizing_player_id)
-            add_symmetries_to_cache(cache, value, state, 3)
+            add_symmetries_to_cache(cache, value, state, num_rows, num_cols)
             print(state)
             print(cache[state_hash])
             return value
@@ -111,7 +171,7 @@ def start_minimax(start_state, start_maximizing_player_id):
             selection = min
         values_children = [_minimax(state.child(action), maximizing_player_id) for action in state.legal_actions()]
         output = selection(values_children)
-        add_symmetries_to_cache(cache, output, state, 3)
+        add_symmetries_to_cache(cache, output, state, num_rows, num_cols)
         return output
     
     result = _minimax(start_state, start_maximizing_player_id)
@@ -120,6 +180,8 @@ def start_minimax(start_state, start_maximizing_player_id):
 
 
 def minimax_search(game,
+                   num_rows,
+                   num_cols,
                    state=None,
                    maximizing_player_id=None,
                    state_to_key=lambda state: state):
@@ -158,7 +220,7 @@ def minimax_search(game,
         state = game.new_initial_state()
     if maximizing_player_id is None:
         maximizing_player_id = state.current_player()
-    v = start_minimax(state.clone(),maximizing_player_id)
+    v = start_minimax(state.clone(), maximizing_player_id, num_rows, num_cols)
     return v
 
 
@@ -167,12 +229,14 @@ def main(_):
 
     games_list = pyspiel.registered_names()
     assert "dots_and_boxes" in games_list
-    game_string = "dots_and_boxes(num_rows=3,num_cols=3)"
+    num_rows = 2
+    num_cols = 1
+    game_string = f"dots_and_boxes(num_rows={num_rows},num_cols={num_cols})"
 
     print("Creating game: {}".format(game_string))
     game = pyspiel.load_game(game_string)
 
-    value = minimax_search(game)
+    value = minimax_search(game, num_rows, num_cols)
 
     if value == 0:
         print("It's a draw")
