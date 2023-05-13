@@ -68,6 +68,9 @@ def start_minimax(start_state, start_maximizing_player_id):
         return output
     
     result = _minimax(start_state, start_maximizing_player_id)
+    for key, val in cache.items():
+        print(key, 'val: ', val)
+    print(cache[(0, (0, 0), 0)])
     print(f'explored {nb_nodes} nodes')
     return result
 

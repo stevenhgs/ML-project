@@ -125,7 +125,7 @@ def state_to_bitmap(state):
     points = get_points(state)
     info_string = state.history_str()
     if info_string == '':
-        return 0
+        return 0, points, state.current_player()
     split_info_string = info_string.split(', ')
     info_digits = [int(digit) for digit in split_info_string]
     bit_map = 0
@@ -230,7 +230,7 @@ def main(_):
     games_list = pyspiel.registered_names()
     assert "dots_and_boxes" in games_list
     num_rows = 2
-    num_cols = 1
+    num_cols = 2
     game_string = f"dots_and_boxes(num_rows={num_rows},num_cols={num_cols})"
 
     print("Creating game: {}".format(game_string))
