@@ -49,7 +49,7 @@ class Agent(pyspiel.Bot):
         # mcts parameters
         self.uct_c = 2
         self.rollout_count = 1
-        self.max_simulations= 1000
+        self.max_simulations = 80
         self.seed = None
         self.rng = np.random.RandomState(self.seed)
         self.evaluator = mcts.RandomRolloutEvaluator(self.rollout_count, self.rng)

@@ -26,6 +26,8 @@ from open_spiel.python.algorithms import mcts
 from open_spiel.python.bots import uniform_random
 import pyspiel
 
+import time
+
 _KNOWN_PLAYERS = [
     # A generic Monte Carlo Tree Search agent.
     "mcts",
@@ -34,8 +36,8 @@ _KNOWN_PLAYERS = [
     "random"
 ]
 
-n_r = 2
-n_c = 2
+n_r = 7
+n_c = 7
 flags.DEFINE_string("game", f"dots_and_boxes(num_rows={n_r},num_cols={n_c},"
                     "utility_margin=true)", "Name of the game.")
 flags.DEFINE_enum("player1", "mcts", _KNOWN_PLAYERS, "Who controls player 1.")
@@ -45,7 +47,7 @@ flags.DEFINE_integer("uct_c", 2, "UCT's exploration constant.")
 # PARAMETER FOR MCTS
 flags.DEFINE_integer("rollout_count", 1, "How many rollouts to do.")
 # PARAMETER FOR MCTS
-flags.DEFINE_integer("max_simulations", 1000, "How many simulations to run.")
+flags.DEFINE_integer("max_simulations", 80, "How many simulations to run.")
 flags.DEFINE_integer("num_games", 1, "How many games to play.")
 flags.DEFINE_integer("seed", None, "Seed for the random number generator.")
 flags.DEFINE_bool("random_first", False, "Play the first move randomly.")
@@ -129,6 +131,7 @@ def _play_game(game, bots, initial_actions):
 
 
 def main(argv):
+  start = time.time()
   game = pyspiel.load_game(FLAGS.game)
   if game.num_players() > 2:
     sys.exit("This game requires more players than the example can handle.")
@@ -156,7 +159,10 @@ def main(argv):
   print("Players:", FLAGS.player1, FLAGS.player2)
   print("Overall wins", overall_wins)
   print("Overall returns", overall_returns)
+  end = time.time()
+  print(f"took {end - start}s to run")
 
 
 if __name__ == "__main__":
   app.run(main)
+  
