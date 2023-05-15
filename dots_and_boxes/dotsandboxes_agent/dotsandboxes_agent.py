@@ -97,7 +97,7 @@ class Agent(pyspiel.Bot):
         num_rows = game_parameters['num_rows']
         num_cols = game_parameters['num_cols']
         self.set_bot(num_rows, num_cols)
-        print('bot restarted')
+        print(f'bot restarted, we have player id {self.player_id}')
 
 
 
@@ -118,6 +118,8 @@ class Agent(pyspiel.Bot):
             `pyspiel.INVALID_ACTION` if there are no legal actions available.
         """
         # Plays random action, change with your best strategy
+        print('gotten state:')
+        print(state)
         return self.bot.step(state)
 
 
