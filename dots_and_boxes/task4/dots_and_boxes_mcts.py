@@ -101,8 +101,6 @@ def _play_game(game, bots, initial_actions):
 
   while not state.is_terminal():
     current_player = state.current_player()
-    # The state can be three different types: chance node,
-    # simultaneous node, or decision node
 
     # Decision node: sample action for the single current player
     bot = bots[current_player]
