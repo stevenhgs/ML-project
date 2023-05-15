@@ -17,6 +17,8 @@ import numpy as np
 import pyspiel
 from open_spiel.python.algorithms import evaluate_bots
 
+from open_spiel.python.algorithms import mcts
+
 
 logger = logging.getLogger('be.kuleuven.cs.dtai.dotsandboxes')
 
@@ -43,7 +45,27 @@ class Agent(pyspiel.Bot):
         the tournament. Initializing the agent should thus take no more than
         a few seconds.
         """
-        pyspiel.Bot.__init__(self)
+        # mcts parameters
+        uct_c = 2
+        rollout_count = 1
+        max_simulations= 1000
+        seed = None
+        rng = np.random.RandomState(seed)
+        evaluator = mcts.RandomRolloutEvaluator(rollout_count, rng)
+        solve = True
+        verbose = False
+        dotsandboxes_game_string = (
+        "dots_and_boxes(num_rows=5,num_cols=5)")
+        game = pyspiel.load_game(dotsandboxes_game_string)
+
+        self.bot = mcts.MCTSBot(
+                        game,
+                        uct_c,
+                        max_simulations,
+                        evaluator,
+                        random_state=rng,
+                        solve=solve,
+                        verbose=verbose)
         self.player_id = player_id
 
     def restart_at(self, state):

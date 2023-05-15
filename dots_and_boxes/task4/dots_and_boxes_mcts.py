@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""MCTS example."""
+"""MCTS example for dots and boxes based on: https://github.com/deepmind/open_spiel/blob/master/open_spiel/python/examples/mcts.py"""
 
 import collections
 import random
@@ -114,24 +114,13 @@ def _play_game(game, bots, initial_actions):
     current_player = state.current_player()
     # The state can be three different types: chance node,
     # simultaneous node, or decision node
-    if state.is_chance_node():
-      # Chance node: sample an outcome
-      outcomes = state.chance_outcomes()
-      num_actions = len(outcomes)
-      _opt_print("Chance node, got " + str(num_actions) + " outcomes")
-      action_list, prob_list = zip(*outcomes)
-      action = np.random.choice(action_list, p=prob_list)
-      action_str = state.action_to_string(current_player, action)
-      _opt_print("Sampled action: ", action_str)
-    elif state.is_simultaneous_node():
-      raise ValueError("Game cannot have simultaneous nodes.")
-    else:
-      # Decision node: sample action for the single current player
-      bot = bots[current_player]
-      action = bot.step(state)
-      action_str = state.action_to_string(current_player, action)
-      _opt_print("Player {} sampled action: {}".format(current_player,
-                                                       action_str))
+
+    # Decision node: sample action for the single current player
+    bot = bots[current_player]
+    action = bot.step(state)
+    action_str = state.action_to_string(current_player, action)
+    _opt_print("Player {} sampled action: {}".format(current_player,
+                                                      action_str))
 
     for i, bot in enumerate(bots):
       if i != current_player:
