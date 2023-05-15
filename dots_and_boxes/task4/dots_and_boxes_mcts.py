@@ -97,18 +97,7 @@ def _play_game(game, bots, initial_actions):
     assert not initial_actions
     initial_actions = [state.action_to_string(
         state.current_player(), random.choice(state.legal_actions()))]
-
-  for action_str in initial_actions:
-    action = _get_action(state, action_str)
-    if action is None:
-      sys.exit("Invalid action: {}".format(action_str))
-
-    history.append(action_str)
-    for bot in bots:
-      bot.inform_action(state, state.current_player(), action)
-    state.apply_action(action)
-    _opt_print("Forced action", action_str)
-    _opt_print("Next state:\n{}".format(state))
+    print(f'initial actions: {initial_actions}')
 
   while not state.is_terminal():
     current_player = state.current_player()
@@ -147,7 +136,7 @@ def main(argv):
     sys.exit("This game requires more players than the example can handle.")
   bots = [
       _init_bot(FLAGS.player1, game, 0),
-      _init_bot(FLAGS.player1, game, 1),
+      _init_bot(FLAGS.player2, game, 1),
   ]
   histories = collections.defaultdict(int)
   overall_returns = [0, 0]
