@@ -60,7 +60,7 @@ flags.DEFINE_integer("uct_c2", 2, "UCT's exploration constant.")
 flags.DEFINE_integer("rollout_count2", 1, "How many rollouts to do.")
 flags.DEFINE_integer("max_simulations2", 1000, "How many simulations to run.")
 
-flags.DEFINE_integer("num_games", 10000, "How many games to play.")
+flags.DEFINE_integer("num_games", 100, "How many games to play.")
 flags.DEFINE_integer("seed", None, "Seed for the random number generator.")
 flags.DEFINE_bool("random_first", False, "Play the first move randomly.")
 flags.DEFINE_bool("solve", True, "Whether to use MCTS-Solver.")
