@@ -82,7 +82,7 @@ def main(_):
     games_list = pyspiel.registered_names()
     assert "dots_and_boxes" in games_list
     num_rows = 1
-    num_cols = 1
+    num_cols = 2
     game_string = f"dots_and_boxes(num_rows={num_rows},num_cols={num_cols})"
 
     print("Creating game: {}".format(game_string))
@@ -97,6 +97,7 @@ def main(_):
         print(f"Player {winning_player} wins.")
 
     end = time.perf_counter()
+    print('\nNaive:')
     print(f'num_rows: {num_rows}, num_cols: {num_cols}')
     print(f'number explored nodes: {nb_nodes}')
     print("Game took: " + str(end - start) + " s")

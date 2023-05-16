@@ -128,6 +128,7 @@ def main(_):
     print("Creating game: {}".format(game_string))
     game = pyspiel.load_game(game_string)
 
+    print('\ncache:')
     print(f'num_rows: {num_rows}, num_cols: {num_cols}')
     value = minimax_search(game)
 

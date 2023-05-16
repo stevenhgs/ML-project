@@ -174,6 +174,7 @@ def start_minimax(start_state, start_maximizing_player_id, num_rows, num_cols):
         return output
     
     result = _minimax(start_state, start_maximizing_player_id)
+    print('\ncache + symmetries:')
     print(f'num_rows: {num_rows}, num_cols: {num_cols}')
     print(f'number explored nodes: {nb_nodes}')
     print(f'cache size: {sys.getsizeof(cache)}')
