@@ -109,14 +109,16 @@ def get_best_moves_from_state(state, state_to_actions_and_values):
             best_actions, best_value = state_to_actions_and_values[str(bitmap)]
             best_value = int(best_value)
 
-            if best_value >= current_best_value:
+            if best_value > current_best_value:
                 best_actions_remapped = remap_nums_from_2x2_to_nrxnc_with_offset(best_actions, n_r, n_c, r_o, c_o)
                 current_best_actions = list(best_actions_remapped)
+                current_best_value = best_value
             elif best_value == current_best_value:
                 best_actions_remapped = remap_nums_from_2x2_to_nrxnc_with_offset(best_actions, n_r, n_c, r_o, c_o)
                 current_best_actions.extend(best_actions_remapped)
     
-    return random.choice(current_best_actions)
+    chosen_action = random.choice(current_best_actions)
+    return chosen_action
 
 
 class OurBot(pyspiel.Bot):

@@ -15,14 +15,16 @@ for num in nums_to_fill_in:
 
 print(state)
 
-with open('dots_and_boxes/3x3_try/state_to_best_actions_and_gain_cache_2x2.json', 'r') as fp:
+with open('dots_and_boxes/_3x3_try/state_to_best_actions_and_gain_cache_2x2.json', 'r') as fp:
     cache = json.load(fp)
 
-"""
+
 for r_o in range(n_r - 2 + 1):
     for c_o in range(n_c - 2 + 1):
-        algorithm.get_2x2_bitmap_from_filled_in_nums_with_offsets(nums_to_fill_in, n_r, n_c, r_o, c_o)
-"""
+        bitmap = algorithm.get_2x2_bitmap_from_filled_in_nums_with_offsets(nums_to_fill_in, n_r, n_c, r_o, c_o)
+        print(bitmap)
+        print(cache[str(bitmap)])
+
 
 print(algorithm.get_best_moves_from_state(state, cache))
 
