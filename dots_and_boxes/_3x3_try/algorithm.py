@@ -1,6 +1,7 @@
 import pyspiel
 import random
 
+
 def get_2x2_bitmap_from_filled_in_nums_with_offsets(filled_in_nums, n_r, n_c, r_o, c_o):
     """
     filled_in_nums should be a set, for time complexity.
@@ -27,8 +28,6 @@ def get_2x2_bitmap_from_filled_in_nums_with_offsets(filled_in_nums, n_r, n_c, r_
         if num_to_find in filled_in_nums:
             bitmap |= 1 << (e + 6)
             _2x2_nums.append(e + 6)
-
-    print_state_of_2x2(_2x2_nums)
 
     return bitmap
 
@@ -83,7 +82,6 @@ def get_best_moves_from_state(state, state_to_actions_and_values):
                 best_actions_remapped = remap_nums_from_2x2_to_nrxnc_with_offset(best_actions, n_r, n_c, r_o, c_o)
                 current_best_actions.extend(best_actions_remapped)
     
-    print(current_best_actions, current_best_value)
     return random.choice(current_best_actions)
 
 

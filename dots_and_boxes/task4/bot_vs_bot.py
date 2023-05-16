@@ -43,8 +43,8 @@ _KNOWN_PLAYERS = [
     "random"
 ]
 
-n_r = 7
-n_c = 7
+n_r = 3
+n_c = 3
 flags.DEFINE_string("game", f"dots_and_boxes(num_rows={n_r},num_cols={n_c},"
                     "utility_margin=true)", "Name of the game.")
 flags.DEFINE_enum("player1", "mcts2", _KNOWN_PLAYERS, "Who controls player 1.")
@@ -58,7 +58,7 @@ flags.DEFINE_integer("uct_c2", 2, "UCT's exploration constant.")
 flags.DEFINE_integer("rollout_count2", 1, "How many rollouts to do.")
 flags.DEFINE_integer("max_simulations2", 1000, "How many simulations to run.")
 
-flags.DEFINE_integer("num_games", 1, "How many games to play.")
+flags.DEFINE_integer("num_games", 100, "How many games to play.")
 flags.DEFINE_integer("seed", None, "Seed for the random number generator.")
 flags.DEFINE_bool("random_first", False, "Play the first move randomly.")
 flags.DEFINE_bool("solve", True, "Whether to use MCTS-Solver.")
