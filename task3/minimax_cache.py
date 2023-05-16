@@ -1,6 +1,7 @@
-import time
 import pyspiel
 from absl import app
+import time
+import sys
 
 
 def get_points(state):
@@ -53,8 +54,6 @@ def start_minimax(start_state, start_maximizing_player_id):
         nb_nodes += 1
         if state.is_terminal():
             cache[state_hash] = state.player_return(maximizing_player_id)
-            print(state)
-            print(cache[state_hash])
             return state.player_return(maximizing_player_id)
 
         player = state.current_player()
@@ -68,7 +67,9 @@ def start_minimax(start_state, start_maximizing_player_id):
         return output
     
     result = _minimax(start_state, start_maximizing_player_id)
-    print(f'explored {nb_nodes} nodes')
+    print(f'number explored nodes: {nb_nodes}')
+    print(f'cache size: {sys.getsizeof(cache)}')
+    print(f'number of keys stored: {nb_nodes}')
     return result
 
 
@@ -116,15 +117,18 @@ def minimax_search(game,
 
 
 def main(_):
-    start = time.time()
+    start = time.perf_counter()
 
     games_list = pyspiel.registered_names()
     assert "dots_and_boxes" in games_list
-    game_string = "dots_and_boxes(num_rows=2,num_cols=2)"
+    num_rows = 2
+    num_cols = 2
+    game_string = f"dots_and_boxes(num_rows={num_rows},num_cols={num_cols})"
 
     print("Creating game: {}".format(game_string))
     game = pyspiel.load_game(game_string)
 
+    print(f'num_rows: {num_rows}, num_cols: {num_cols}')
     value = minimax_search(game)
 
     if value == 0:
@@ -133,7 +137,7 @@ def main(_):
         winning_player = 1 if value == 1 else 2
         print(f"Player {winning_player} wins.")
 
-    end = time.time()
+    end = time.perf_counter()
     print("Game took: " + str(end - start) + " s")
 
 

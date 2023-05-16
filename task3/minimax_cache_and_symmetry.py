@@ -1,6 +1,7 @@
-import time
 import pyspiel
 from absl import app
+import time
+import sys
 
 
 def flip_over_x_axis(filled_in_nums, n_r, n_c):
@@ -160,8 +161,6 @@ def start_minimax(start_state, start_maximizing_player_id, num_rows, num_cols):
         if state.is_terminal():
             value = state.player_return(maximizing_player_id)
             add_symmetries_to_cache(cache, value, state, num_rows, num_cols)
-            print(state)
-            print(cache[state_hash])
             return value
 
         player = state.current_player()
@@ -175,7 +174,10 @@ def start_minimax(start_state, start_maximizing_player_id, num_rows, num_cols):
         return output
     
     result = _minimax(start_state, start_maximizing_player_id)
-    print(f'explored {nb_nodes} nodes')
+    print(f'num_rows: {num_rows}, num_cols: {num_cols}')
+    print(f'number explored nodes: {nb_nodes}')
+    print(f'cache size: {sys.getsizeof(cache)}')
+    print(f'number of keys stored: {nb_nodes}')
     return result
 
 
@@ -225,7 +227,7 @@ def minimax_search(game,
 
 
 def main(_):
-    start = time.time()
+    start = time.perf_counter()
 
     games_list = pyspiel.registered_names()
     assert "dots_and_boxes" in games_list
@@ -244,7 +246,7 @@ def main(_):
         winning_player = 1 if value == 1 else 2
         print(f"Player {winning_player} wins.")
 
-    end = time.time()
+    end = time.perf_counter()
     print("Game took: " + str(end - start) + " s")
 
 

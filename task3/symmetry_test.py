@@ -1,4 +1,4 @@
-import minimax_cache_and_symmetry
+import task3.minimax_cache_and_symmetry as minimax_cache_and_symmetry
 import pyspiel
 
 

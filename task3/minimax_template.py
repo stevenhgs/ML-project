@@ -1,6 +1,9 @@
-import time
 import pyspiel
 from absl import app
+import time
+
+
+nb_nodes = 0
 
 
 def _minimax(state, maximizing_player_id):
@@ -15,7 +18,8 @@ def _minimax(state, maximizing_player_id):
     Returns:
       The optimal value of the sub-game starting in state
     """
-
+    global nb_nodes
+    nb_nodes += 1
     if state.is_terminal():
         return state.player_return(maximizing_player_id)
 
@@ -26,7 +30,6 @@ def _minimax(state, maximizing_player_id):
         selection = min
     values_children = [_minimax(state.child(action), maximizing_player_id) for action in state.legal_actions()]
     return selection(values_children)
-
 
 def minimax_search(game,
                    state=None,
@@ -74,11 +77,13 @@ def minimax_search(game,
 
 
 def main(_):
-    start = time.time()
+    start = time.perf_counter()
 
     games_list = pyspiel.registered_names()
     assert "dots_and_boxes" in games_list
-    game_string = "dots_and_boxes(num_rows=2,num_cols=2)"
+    num_rows = 1
+    num_cols = 1
+    game_string = f"dots_and_boxes(num_rows={num_rows},num_cols={num_cols})"
 
     print("Creating game: {}".format(game_string))
     game = pyspiel.load_game(game_string)
@@ -91,7 +96,9 @@ def main(_):
         winning_player = 1 if value == 1 else 2
         print(f"Player {winning_player} wins.")
 
-    end = time.time()
+    end = time.perf_counter()
+    print(f'num_rows: {num_rows}, num_cols: {num_cols}')
+    print(f'number explored nodes: {nb_nodes}')
     print("Game took: " + str(end - start) + " s")
 
 
