@@ -67,47 +67,50 @@ def filled_in_nums_to_bitmap(filled_in_nums):
     return bit_map
 
 
-def add_symmetries_to_cache(cache, value, state, n_r, n_c):
+def get_canonical_representation(state, n_r, n_c):
     points = get_points(state)
     info_string = state.history_str()
     if info_string == '': 
         return 0
     split_info_string = info_string.split(', ')
     filled_in_nums = [int(digit) for digit in split_info_string]
+    bitmaps = []
     # normal key
-    key = (filled_in_nums_to_bitmap(filled_in_nums), points, state.current_player())
-    cache[key] = value
+    bitmap = filled_in_nums_to_bitmap(filled_in_nums)
+    bitmaps.append(bitmap)
     # flipped key horizontal
     flipped_over_x_nums = flip_over_x_axis(filled_in_nums, n_r, n_c)
-    key_flipped_over_x = (filled_in_nums_to_bitmap(flipped_over_x_nums), points, state.current_player())
-    cache[key_flipped_over_x] = value
+    bitmap_flipped_over_x = filled_in_nums_to_bitmap(flipped_over_x_nums)
+    bitmaps.append(bitmap_flipped_over_x)
 
     if n_r == n_c:  # square field (6 extra symmetries)
         rotated_nums_90 = rotate_90_degrees(filled_in_nums, n_r)
-        key90 = (filled_in_nums_to_bitmap(rotated_nums_90), points, state.current_player())
-        cache[key90] = value
+        bitmap90 = filled_in_nums_to_bitmap(rotated_nums_90)
+        bitmaps.append(bitmap90)
         flipped_over_x_nums_90 = flip_over_x_axis(rotated_nums_90, n_r, n_c)
-        key_flipped_over_x_90 = (filled_in_nums_to_bitmap(flipped_over_x_nums_90), points, state.current_player())
-        cache[key_flipped_over_x_90] = value
+        bitmap_flipped_over_x_90 = filled_in_nums_to_bitmap(flipped_over_x_nums_90)
+        bitmaps.append(bitmap_flipped_over_x_90)
         rotated_nums_180 = rotate_90_degrees(rotated_nums_90, n_r)
-        key180 = (filled_in_nums_to_bitmap(rotated_nums_180), points, state.current_player())
-        cache[key180] = value
+        bitmap180 = filled_in_nums_to_bitmap(rotated_nums_180)
+        bitmaps.append(bitmap180)
         flipped_over_x_nums_180 = flip_over_x_axis(rotated_nums_180, n_r, n_c)
-        key_flipped_over_x_180 = (filled_in_nums_to_bitmap(flipped_over_x_nums_180), points, state.current_player())
-        cache[key_flipped_over_x_180] = value
+        bitmap_flipped_over_x_180 = filled_in_nums_to_bitmap(flipped_over_x_nums_180)
+        bitmaps.append(bitmap_flipped_over_x_180)
         rotated_nums_270 = rotate_90_degrees(rotated_nums_180, n_r)
-        key270 = (filled_in_nums_to_bitmap(rotated_nums_270), points, state.current_player())
-        cache[key270] = value
+        bitmap270 = filled_in_nums_to_bitmap(rotated_nums_270)
+        bitmaps.append(bitmap270)
         flipped_over_x_nums_270 = flip_over_x_axis(rotated_nums_270, n_r, n_c)
-        key_flipped_over_x_270 = (filled_in_nums_to_bitmap(flipped_over_x_nums_270), points, state.current_player())
-        cache[key_flipped_over_x_270] = value
+        bitmap_flipped_over_x_270 = filled_in_nums_to_bitmap(flipped_over_x_nums_270)
+        bitmaps.append(bitmap_flipped_over_x_270)
     else:  # rectangular field (2 extra symmetries)
         flipped_over_y_nums = flip_over_y_axis(filled_in_nums, n_r, n_c)
-        key_flipped_over_y = (filled_in_nums_to_bitmap(flipped_over_y_nums), points, state.current_player())
-        cache[key_flipped_over_y] = value
+        bitmap_flipped_over_y = filled_in_nums_to_bitmap(flipped_over_y_nums)
+        bitmaps.append(bitmap_flipped_over_y)
         flipped_over_x_and_y_nums = flip_over_y_axis(flipped_over_x_nums, n_r, n_c)
-        key_flipped_over_x_and_y = (filled_in_nums_to_bitmap(flipped_over_x_and_y_nums), points, state.current_player())
-        cache[key_flipped_over_x_and_y] = value
+        bitmap_flipped_over_x_and_y = filled_in_nums_to_bitmap(flipped_over_x_and_y_nums)
+        bitmaps.append(bitmap_flipped_over_x_and_y)
+    
+    return min(bitmaps)
 
 
 def get_points(state):
@@ -122,17 +125,12 @@ def get_points(state):
     return player_1_points, player_2_points
 
 
-def state_to_bitmap(state):
+def state_to_canonical_representation_bitmap(state, n_r, n_c):
     points = get_points(state)
     info_string = state.history_str()
     if info_string == '':
         return 0, points, state.current_player()
-    split_info_string = info_string.split(', ')
-    info_digits = [int(digit) for digit in split_info_string]
-    bit_map = 0
-    for digit in info_digits:
-        flag = 1 << digit
-        bit_map |= flag
+    bit_map = get_canonical_representation(state, n_r, n_c)
     return bit_map, points, state.current_player()
 
 
@@ -152,15 +150,15 @@ def start_minimax(start_state, start_maximizing_player_id, num_rows, num_cols):
         Returns:
         The optimal value of the sub-game starting in state
         """
-        state_hash = state_to_bitmap(state)
-        if cache.get(state_hash) is not None:
-            return cache[state_hash]
+        canonical_representation = state_to_canonical_representation_bitmap(state, num_rows, num_cols)
+        if cache.get(canonical_representation) is not None:
+            return cache[canonical_representation]
 
         nonlocal nb_nodes
         nb_nodes += 1
         if state.is_terminal():
             value = state.player_return(maximizing_player_id)
-            add_symmetries_to_cache(cache, value, state, num_rows, num_cols)
+            cache[canonical_representation] = value
             return value
 
         player = state.current_player()
@@ -170,11 +168,11 @@ def start_minimax(start_state, start_maximizing_player_id, num_rows, num_cols):
             selection = min
         values_children = [_minimax(state.child(action), maximizing_player_id) for action in state.legal_actions()]
         output = selection(values_children)
-        add_symmetries_to_cache(cache, output, state, num_rows, num_cols)
+        cache[canonical_representation] = output
         return output
     
     result = _minimax(start_state, start_maximizing_player_id)
-    print('\ncache + symmetries:')
+    print('\ncache + symmetries canonical representation:')
     print(f'num_rows: {num_rows}, num_cols: {num_cols}')
     print(f'number explored nodes: {nb_nodes}')
     print(f'cache size: {sys.getsizeof(cache)}')

@@ -121,7 +121,7 @@ def main(_):
 
     games_list = pyspiel.registered_names()
     assert "dots_and_boxes" in games_list
-    num_rows = 2
+    num_rows = 3
     num_cols = 3
     game_string = f"dots_and_boxes(num_rows={num_rows},num_cols={num_cols})"
 
