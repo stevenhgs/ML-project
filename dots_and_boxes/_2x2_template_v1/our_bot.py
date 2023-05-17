@@ -1,5 +1,5 @@
 import pyspiel
-from dots_and_boxes._3x3_try.algorithm import get_best_moves_from_state
+from dots_and_boxes._2x2_template_v1.algorithm import get_best_moves_from_state
 import json
 
 
@@ -15,7 +15,7 @@ class OurBot(pyspiel.Bot):
         """
         pyspiel.Bot.__init__(self)
         self._player_id = player_id
-        with open('dots_and_boxes/_3x3_try/state_to_best_actions_and_gain_cache_2x2.json', 'r') as fp:
+        with open('dots_and_boxes/_2x2_template_v1/state_to_best_actions_and_gain_cache_2x2.json', 'r') as fp:
             self.cache = json.load(fp)
     
     def restart_at(self, state):
