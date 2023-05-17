@@ -5,8 +5,12 @@ import random
 
 def get_2x2_bitmap_from_filled_in_nums_with_offsets(filled_in_nums, n_r, n_c, r_o, c_o):
     """
+    This method return the bitmap of a 2x2 dots and boxes game cut out of an nxm dots and boxes game with a row offset and column offset.
     filled_in_nums should be a set, for time complexity.
     n_r is the number of rows of cells in the game.
+    n_c is the number of cols of cells in the game.
+    r_o is the row offset.
+    c_o is the column offset.
     """
     bitmap = 0
     number_of_horizontal_lines = (n_r + 1) * n_c
@@ -34,6 +38,13 @@ def get_2x2_bitmap_from_filled_in_nums_with_offsets(filled_in_nums, n_r, n_c, r_
 
 
 def remap_nums_from_2x2_to_nrxnc_with_offset(nums, n_r, n_c, r_o, c_o):
+    """
+    This method returns the remapped nums from a 2x2 dots and boxes game to a nrxnc dots and boxes game with given offsets.
+    n_r is the number of rows of cells in the game.
+    n_c is the number of cols of cells in the game.
+    r_o is the row offset.
+    c_o is the column offset.
+    """
     remapped_nums = []
     nb_of_horizontal_lines = (n_r + 1) * n_c
     nb_horizontal_lines_2x2 = 2 * (2 + 1)
@@ -54,6 +65,15 @@ def remap_nums_from_2x2_to_nrxnc_with_offset(nums, n_r, n_c, r_o, c_o):
 
 
 def get_best_moves_from_state(state, state_to_actions_and_values):
+    """
+    This method gets the best move for a state from a mxn dots and boxes game.
+    This method cuts out every 2x2 grid of the given state and holds all the actions with the best values.
+    Then it takes a random action out of the actions which occurs the most.
+    state_to_actions_and_values should be a dictionary. The keys of this dictionary should be the bitmap of a 2x2 dots and boxes game.
+    the values of this dictionary has two elements.
+    The first element are the best actions to take in a given 2x2 state.
+    The second element is the maximum points which can still be scored from a given 2x2 state if both players play optimally.
+    """
     info_string = state.history_str()
     if info_string == '':
         filled_in_nums = set()
