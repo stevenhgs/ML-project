@@ -15,6 +15,6 @@ plt.loglog(x, cache_and_sym, label="Cache and symmetries: strategy 2", linewidth
 plt.loglog(x[:-2], naive, label="Naive", linewidth='2')
 
 plt.xlabel("Amount of possible states of the game", fontsize=22)
-plt.ylabel("Time needed to solve the game (S)", fontsize=22)
+plt.ylabel("Time needed to solve the game (s)", fontsize=22)
 plt.legend(fontsize=14)
 plt.show()
