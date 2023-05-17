@@ -69,7 +69,7 @@ def start_minimax(start_state, start_maximizing_player_id):
     result = _minimax(start_state, start_maximizing_player_id)
     print(f'number explored nodes: {nb_nodes}')
     print(f'cache size: {sys.getsizeof(cache)}')
-    print(f'number of keys stored: {nb_nodes}')
+    print(f'number of keys stored: {len(cache.keys())}')
     return result
 
 
@@ -122,7 +122,7 @@ def main(_):
     games_list = pyspiel.registered_names()
     assert "dots_and_boxes" in games_list
     num_rows = 2
-    num_cols = 2
+    num_cols = 3
     game_string = f"dots_and_boxes(num_rows={num_rows},num_cols={num_cols})"
 
     print("Creating game: {}".format(game_string))
