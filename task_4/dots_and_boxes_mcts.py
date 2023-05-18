@@ -45,7 +45,7 @@ flags.DEFINE_enum("player2", "random", _KNOWN_PLAYERS, "Who controls player 2.")
 # PARAMETER FOR MCTS
 flags.DEFINE_integer("uct_c", 2, "UCT's exploration constant.")
 # PARAMETER FOR MCTS
-flags.DEFINE_integer("rollout_count", 9, "How many rollouts to do.")
+flags.DEFINE_integer("rollout_count", 1, "How many rollouts to do.")
 # PARAMETER FOR MCTS
 flags.DEFINE_integer("max_simulations", 80, "How many simulations to run.")
 flags.DEFINE_integer("num_games", 1, "How many games to play.")

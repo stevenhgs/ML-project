@@ -1,6 +1,7 @@
 import pyspiel
-from dots_and_boxes._2x2_template_v1.algorithm import get_best_moves_from_state
+from task_4._2x2_template_v1.algorithm import get_best_moves_from_state
 import json
+import os
 
 
 class OurBot(pyspiel.Bot):
@@ -15,7 +16,9 @@ class OurBot(pyspiel.Bot):
         """
         pyspiel.Bot.__init__(self)
         self._player_id = player_id
-        with open('dots_and_boxes/_2x2_template_v1/state_to_best_actions_and_gain_cache_2x2.json', 'r') as fp:
+        package_directory = os.path.dirname(os.path.abspath(__file__))
+        json_file = os.path.join(package_directory, '2x2_minimax.json')
+        with open(json_file, 'r') as fp:
             self.cache = json.load(fp)
     
     def restart_at(self, state):

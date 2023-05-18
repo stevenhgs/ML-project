@@ -26,8 +26,8 @@ from open_spiel.python.algorithms import mcts
 from open_spiel.python.bots import uniform_random
 import pyspiel
 
-import dots_and_boxes._2x2_template_v1.our_bot as our_bot
-import dots_and_boxes._2x2_template_v2.our_bot_v2 as our_bot_v2
+import task_4._2x2_template_v1.our_bot as our_bot
+import task_4._2x2_template_v2.our_bot_v2 as our_bot_v2
 import time
 
 _KNOWN_PLAYERS = [
@@ -37,8 +37,10 @@ _KNOWN_PLAYERS = [
     # A generic Monte Carlo Tree Search agent.
     "mcts2",
 
+    # our sliding window implementation
     "sliding",
 
+    # our sliding window implementation a bit tweaked
     "sliding_v2",
 
     # A generic random agent.
@@ -51,8 +53,8 @@ flags.DEFINE_string("game", f"dots_and_boxes(num_rows={n_r},num_cols={n_c},"
                     "utility_margin=true)", "Name of the game.")
 
 # change players here
-flags.DEFINE_enum("player1", "random", _KNOWN_PLAYERS, "Who controls player 1.")
-flags.DEFINE_enum("player2", "random", _KNOWN_PLAYERS, "Who controls player 2.")
+flags.DEFINE_enum("player1", "sliding", _KNOWN_PLAYERS, "Who controls player 1.")
+flags.DEFINE_enum("player2", "sliding_v2", _KNOWN_PLAYERS, "Who controls player 2.")
 # PARAMETER FOR MCTS1
 flags.DEFINE_integer("uct_c1", 2, "UCT's exploration constant.")
 flags.DEFINE_integer("rollout_count1", 1, "How many rollouts to do.")
