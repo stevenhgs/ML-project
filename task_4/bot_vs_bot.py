@@ -37,9 +37,9 @@ _KNOWN_PLAYERS = [
     # A generic Monte Carlo Tree Search agent.
     "mcts2",
 
-    "our_bot",
+    "sliding",
 
-    "our_bot_v2",
+    "sliding_v2",
 
     # A generic random agent.
     "random"
@@ -49,15 +49,17 @@ n_r = 7
 n_c = 7
 flags.DEFINE_string("game", f"dots_and_boxes(num_rows={n_r},num_cols={n_c},"
                     "utility_margin=true)", "Name of the game.")
-flags.DEFINE_enum("player1", "our_bot_v2", _KNOWN_PLAYERS, "Who controls player 1.")
-flags.DEFINE_enum("player2", "our_bot", _KNOWN_PLAYERS, "Who controls player 2.")
+
+# change players here
+flags.DEFINE_enum("player1", "random", _KNOWN_PLAYERS, "Who controls player 1.")
+flags.DEFINE_enum("player2", "random", _KNOWN_PLAYERS, "Who controls player 2.")
 # PARAMETER FOR MCTS1
 flags.DEFINE_integer("uct_c1", 2, "UCT's exploration constant.")
 flags.DEFINE_integer("rollout_count1", 1, "How many rollouts to do.")
 flags.DEFINE_integer("max_simulations1", 80, "How many simulations to run.")
 # PARAMETER FOR MCTS2
 flags.DEFINE_integer("uct_c2", 2, "UCT's exploration constant.")
-flags.DEFINE_integer("rollout_count2", 1, "How many rollouts to do.")
+flags.DEFINE_integer("rollout_count2", 10, "How many rollouts to do.")
 flags.DEFINE_integer("max_simulations2", 1000, "How many simulations to run.")
 
 flags.DEFINE_integer("num_games", 100, "How many games to play.")
@@ -89,10 +91,10 @@ def _init_bot(bot_type, game, player_id):
         random_state=rng,
         solve=FLAGS.solve,
         verbose=FLAGS.verbose)
-  if bot_type == "our_bot":
+  if bot_type == "sliding":
     print("preparing our_bot")
     return our_bot.OurBot(player_id)
-  if bot_type == "our_bot_v2":
+  if bot_type == "sliding_v2":
     print("preparing our_bot")
     return our_bot_v2.OurBot(player_id)
   if bot_type == "mcts2":
@@ -122,7 +124,7 @@ def _get_action(state, action_str):
 def _play_game(game, bots, initial_actions):
   """Plays one game."""
   state = game.new_initial_state()
-  _opt_print("Initial state:\n{}".format(state))
+  # _opt_print("Initial state:\n{}".format(state))
 
   history = []
 
@@ -139,7 +141,7 @@ def _play_game(game, bots, initial_actions):
     bot = bots[current_player]
     action = bot.step(state)
     action_str = state.action_to_string(current_player, action)
-    _opt_print("Player {} sampled action: {}".format(current_player, action_str))
+    # _opt_print("Player {} sampled action: {}".format(current_player, action_str))
 
     for i, bot in enumerate(bots):
       if i != current_player:
@@ -147,12 +149,11 @@ def _play_game(game, bots, initial_actions):
     history.append(action_str)
     state.apply_action(action)
 
-    _opt_print("Next state:\n{}".format(state))
+    # _opt_print("Next state:\n{}".format(state))
 
   # Game is now done. Print return for each player
   returns = state.returns()
-  print("Returns:", " ".join(map(str, returns)), ", Game actions:",
-        " ".join(history))
+  # print("Returns:", " ".join(map(str, returns)), ", Game actions:"," ".join(history))
 
   for bot in bots:
     bot.restart()

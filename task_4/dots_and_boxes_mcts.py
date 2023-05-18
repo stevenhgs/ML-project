@@ -47,7 +47,7 @@ flags.DEFINE_integer("uct_c", 2, "UCT's exploration constant.")
 # PARAMETER FOR MCTS
 flags.DEFINE_integer("rollout_count", 9, "How many rollouts to do.")
 # PARAMETER FOR MCTS
-flags.DEFINE_integer("max_simulations", 10, "How many simulations to run.")
+flags.DEFINE_integer("max_simulations", 80, "How many simulations to run.")
 flags.DEFINE_integer("num_games", 1, "How many games to play.")
 flags.DEFINE_integer("seed", None, "Seed for the random number generator.")
 flags.DEFINE_bool("random_first", False, "Play the first move randomly.")
