@@ -1,5 +1,5 @@
 import pyspiel
-from task_4._2x2_template_v2.algorithm_v2 import get_best_moves_from_state
+from _2x2_template_v2.algorithm_v2 import get_best_moves_from_state
 import json
 import os
 

@@ -26,8 +26,8 @@ from open_spiel.python.algorithms import mcts
 from open_spiel.python.bots import uniform_random
 import pyspiel
 
-import task_4._2x2_template_v1.our_bot as our_bot
-import task_4._2x2_template_v2.our_bot_v2 as our_bot_v2
+import _2x2_template_v1.our_bot as our_bot
+import _2x2_template_v2.our_bot_v2 as our_bot_v2
 import time
 
 _KNOWN_PLAYERS = [
